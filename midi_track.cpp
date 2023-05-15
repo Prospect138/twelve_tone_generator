@@ -52,7 +52,7 @@ void MidiTrack::SerializeTrack(std::ofstream &file)
         event.Serialize(file);
     }
 
-    char eof[3] = {0xFF, 0x2F, 0x00};
+    char eof[3] = {static_cast<char>(0xFF), 0x2F, 0x00};
     file.write(eof, 3);
     file.close();
 }
@@ -86,9 +86,3 @@ void Event::Set(uint8_t status, uint8_t pitch, uint8_t velocity)
     data_byte1 = pitch;
     data_byte2 = velocity;
 }
-
-//void NoteOff::Set(uint8_t pitch, uint8_t velocity)
-//{
-//    data_byte1 = pitch;
-//    data_byte2 = velocity;
-//}
