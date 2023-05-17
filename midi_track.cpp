@@ -39,7 +39,7 @@ void MidiTrack::SerializeTrack(std::ofstream &file)
     file.write(shapka, 14);
 
     //header for single track
-    uint8_t lng = midi_events_.size() * 4 + 3;
+    int8_t lng = midi_events_.size() * 4 + 3;
     char track_shapka[8] = {0x4D, 0x54, 0x72, 0x6B, 
     0x00, 0x00, 0x00, lng};
     file.write(track_shapka, 8);

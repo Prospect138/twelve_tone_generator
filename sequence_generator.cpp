@@ -1,8 +1,15 @@
 #include "sequence_generator.h"
 #include <algorithm>
 #include <random>
+#include <exception>
+#include <iostream>
 
-void Sequence::GenerateSequence()
+Sequence::Sequence(){
+    std::vector<Note> temp(12, {0, 0, 0, 0});
+    matrix_ = std::vector<std::vector<Note>>(12, temp);
+}
+
+Sequence Sequence::GenerateSequence()
 {
     std::random_device rd;
     std::mt19937 g(rd());
@@ -16,10 +23,52 @@ void Sequence::GenerateSequence()
         sequence_.push_back(note);
     }
 
+    return *this;
 }
 
-void Sequence::SetTonality(uint8_t tone){
+Sequence Sequence::GenerateMatrix(){
+    if (sequence_.empty()){
+        throw std::logic_error("Sequence is not generated");
+    }
+
+    matrix_[0] = sequence_;
+
+    for (int i = 1; i < matrix_.size(); ++i){
+        matrix_[i][i] = matrix_[0][0]; //строим главную диагональ 
+    }
+    for (int y = 1; y < matrix_.size(); ++y){
+        int8_t diff = matrix_[y-1][y].freq - matrix_[y][y].freq;
+        for (int x = 0; x < matrix_.size(); ++x) {
+            matrix_[y][x].freq = matrix_[y-1][x].freq - diff;
+        }
+    }
+    return *this;
+}
+
+void Sequence::PrintMatrix() {
+    for (int y = 0; y < matrix_.size(); ++y) {
+        for (int x = 0; x < matrix_.size(); ++x) {
+            std::cout << (int)matrix_[y][x].freq << " "; //нужен фикс
+        }
+        std::cout << "\n";
+    }
+}
+
+Sequence Sequence::SetMainTone(uint8_t tone){
+    if (tone > 95) {
+        throw std::invalid_argument("Введите тон до 96 (C7)");
+    }
     tonality_ = tone;
+        return *this;
+}
+
+Sequence Sequence::SetSequence(std::vector<int> seq) {
+    for (int i = 0; i < seq.size(); ++i){
+        uint8_t pitch = tonality_ + seq[i];
+        Note note{pitch, 95, i, i+1};
+        sequence_.push_back(note);
+    }
+    return *this;
 }
 
 std::vector<Note> Sequence::GetSequence()

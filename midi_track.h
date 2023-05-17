@@ -10,11 +10,11 @@ public:
     void Serialize(std::ostream& outfile);
     void Parse(std::istream& infile);
     void Set(uint8_t status, uint8_t pitch, uint8_t velocity);
-    uint8_t delta_time;
+    int8_t delta_time;
 private:
-    uint8_t status_byte;
-    uint8_t data_byte1; //pitch 
-    uint8_t data_byte2; //velocity
+    int8_t status_byte;
+    int8_t data_byte1; //pitch 
+    int8_t data_byte2; //velocity
 };
 
 class MidiTrack {
